@@ -1,9 +1,6 @@
-<h1>New shot</h1>
-
-<%= render "form", shot: @shot %>
-
-<br>
-
-<div>
-  <%= link_to "Back to shots", shots_path %>
-</div>
+<section class="section">
+  <div class="container">
+    <h1 class="title is-2 has-text-centered">What are you working on?</h1>
+    <%= render 'form', shot: @shot %>
+  </div>
+</section>
