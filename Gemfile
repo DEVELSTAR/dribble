@@ -58,6 +58,8 @@ gem 'jquery-rails', '~> 4.5'
 gem 'gravatar_image_tag', '~> 1.2'
 gem 'acts_as_votable', '~> 0.13.2'
 
+gem 'binding_of_caller', '~> 1.0'
+
 
 group :development, :test do
   # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem
