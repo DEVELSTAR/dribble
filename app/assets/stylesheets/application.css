@@ -1,4 +1,7 @@
-
+html, body {
+	min-height: 100vh;
+	background-color: #f4f4f4;
+}
 $pink: #ea4c89;
 $pink-invert: #fff;
 
@@ -10,10 +13,7 @@ $link-hover: darken($primary, 20%);
 
 @import 'bulma/css/bulma.css'
 
-html, body {
-	min-height: 100vh;
-	background-color: #f4f4f4;
-}
+
 
 #drop_zone {
 	position: relative;

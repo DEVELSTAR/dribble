@@ -1,59 +1,81 @@
 class ShotsController < ApplicationController
-  before_action :set_shot, only: %i[ show edit update destroy ]
+  before_action :set_shot, only: [:show, :edit, :update, :destroy, :like, :unlike]
+  before_action :authenticate_user!, only: [:edit, :update, :destroy, :like, :unlike]
+  impressionist actions: [:show], unique: [:impressionable_type, :impressionable_id, :session_hash]
 
-  # GET /shots or /shots.json
+  # GET /shots
+  # GET /shots.json
   def index
-    @shots = Shot.all
+    @shots = Shot.all.order('created_at DESC')
   end
 
-  # GET /shots/1 or /shots/1.json
+  # GET /shots/1
+  # GET /shots/1.json
   def show
   end
 
   # GET /shots/new
   def new
-    @shot = Shot.new
+    @shot = current_user.shots.build
   end
 
   # GET /shots/1/edit
   def edit
   end
 
-  # POST /shots or /shots.json
+  # POST /shots
+  # POST /shots.json
   def create
-    @shot = Shot.new(shot_params)
+    @shot = current_user.shots.build(shot_params)
 
     respond_to do |format|
       if @shot.save
-        format.html { redirect_to shot_url(@shot), notice: "Shot was successfully created." }
+        format.html { redirect_to @shot, notice: 'Shot was successfully created.' }
         format.json { render :show, status: :created, location: @shot }
       else
-        format.html { render :new, status: :unprocessable_entity }
+        format.html { render :new }
         format.json { render json: @shot.errors, status: :unprocessable_entity }
       end
     end
   end
 
-  # PATCH/PUT /shots/1 or /shots/1.json
+  # PATCH/PUT /shots/1
+  # PATCH/PUT /shots/1.json
   def update
     respond_to do |format|
       if @shot.update(shot_params)
-        format.html { redirect_to shot_url(@shot), notice: "Shot was successfully updated." }
+        format.html { redirect_to @shot, notice: 'Shot was successfully updated.' }
         format.json { render :show, status: :ok, location: @shot }
       else
-        format.html { render :edit, status: :unprocessable_entity }
+        format.html { render :edit }
         format.json { render json: @shot.errors, status: :unprocessable_entity }
       end
     end
   end
 
-  # DELETE /shots/1 or /shots/1.json
+  # DELETE /shots/1
+  # DELETE /shots/1.json
   def destroy
     @shot.destroy
-
     respond_to do |format|
-      format.html { redirect_to shots_url, notice: "Shot was successfully destroyed." }
+      format.html { redirect_to shots_url, notice: 'Shot was successfully destroyed.' }
       format.json { head :no_content }
+    end
+  end
+
+  def like
+    @shot.liked_by current_user
+    respond_to do |format|
+      format.html { redirect_back fallback_location: root_path }
+      format.json { render layout:false }
+    end
+  end
+
+  def unlike
+    @shot.unliked_by current_user
+    respond_to do |format|
+      format.html { redirect_back fallback_location: root_path }
+      format.json { render layout:false }
     end
   end
 
@@ -63,8 +85,8 @@ class ShotsController < ApplicationController
       @shot = Shot.find(params[:id])
     end
 
-    # Only allow a list of trusted parameters through.
+    # Never trust parameters from the scary internet, only allow the white list through.
     def shot_params
-      params.require(:shot).permit(:title, :description, :user_id)
+      params.require(:shot).permit(:title, :description, :user_shot)
     end
 end
